@@ -1,0 +1,62 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+file_extensions:
+  - wsd
+scope: source.wsd
+contexts:
+  main:
+    # Strings begin and end with quotes, and use backslashes as an escape
+    # character
+    - match: '"'
+      scope: punctuation.definition.string.begin.wsd
+      push: double_quoted_string
+    
+    - match: ''''
+      scope: punctuation.definition.string.begin.wsd
+      push: single_quoted_string
+
+
+    # Comments begin with a '#' and finish at the end of the line
+    - match: '#'
+      scope: punctuation.definition.comment.wsd
+      push: line_comment
+
+    # Keywords are if, else for and while.
+    # Note that blackslashes don't need to be escaped within single quoted
+    # strings in YAML. When using single quoted strings, only single quotes
+    # need to be escaped: this is done by using two single quotes next to each
+    # other.
+    - match: '^\W*(alt|par|else|loop|opt|end|note)\b'
+      scope: keyword.control.wsd
+
+    - match: '^\W*(actor|participant|activate|deactivate|destroy|title|ref)\b'
+      scope: keyword.syntax.wsd
+
+    - match: '([a-zA-Z0-9\- ]+)->[+-]?([a-zA-Z0-9 ]+):'
+      scope: keyword.actor.wsd
+
+    # Numbers
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric.wsd
+
+  double_quoted_string:
+    - meta_scope: string.quoted.double.wsd
+    - match: '\\.'
+      scope: constant.character.escape.wsd
+    - match: '"'
+      scope: punctuation.definition.string.end.wsd
+      pop: true
+
+  single_quoted_string:
+    - meta_scope: string.quoted.single.wsd
+    - match: '\\.'
+      scope: constant.character.escape.wsd
+    - match: '[''$]'
+      scope: punctuation.definition.string.end.wsd
+      pop: true      
+
+  line_comment:
+    - meta_scope: comment.line.wsd
+    - match: $
+      pop: true
